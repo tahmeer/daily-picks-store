@@ -1,7 +1,7 @@
 {
     "version": 2,
     "regions": ["bom1"],
-    "installCommand": "composer install --no-dev --optimize-autoloader --no-interaction && npm ci",
+    "installCommand": "curl -sS https://getcomposer.org/installer | php -- --install-dir=/tmp --filename=composer && php /tmp/composer install --no-dev --optimize-autoloader --no-interaction && npm ci",
     "buildCommand": "npm run build",
     "functions": {
         "api/index.php": {
