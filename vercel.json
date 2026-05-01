@@ -1,8 +1,7 @@
 {
     "version": 2,
     "regions": ["bom1"],
-    "installCommand": "npm ci",
-    "buildCommand": "curl -sS https://getcomposer.org/installer | php -- --install-dir=/tmp --filename=composer && php /tmp/composer install --no-dev --optimize-autoloader --no-interaction && npm run build",
+    "buildCommand": "curl -sS https://getcomposer.org/installer | php -- --install-dir=/tmp --filename=composer && php /tmp/composer install --no-dev --optimize-autoloader --no-interaction && npm ci && npm run build",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.7.4",
