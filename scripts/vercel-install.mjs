@@ -33,8 +33,8 @@ function installPhp() {
   if (hasPhp()) return;
 
   const attempts = [
+    'dnf install -y php8.3-cli php8.3-mbstring php8.3-xml php8.3-pdo php8.3-mysqlnd',
     'dnf install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
-    'dnf install -y php8.3 php8.3-cli php8.3-mbstring php8.3-xml php8.3-pdo php8.3-mysqlnd',
     'microdnf install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
     'yum install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
     'apt-get update -y && apt-get install -y php-cli php-mbstring php-xml php-mysql',
