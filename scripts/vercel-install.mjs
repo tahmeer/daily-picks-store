@@ -1,5 +1,5 @@
 /**
- * Vercel build image = Node; PHP often missing. Try OS packages (root/sudo), then composer + vite.
+ * Installs PHP via OS package manager if needed, then composer install --no-dev.
  */
 import { execSync } from 'node:child_process';
 import { createWriteStream } from 'node:fs';
@@ -67,14 +67,22 @@ function downloadFile(url, dest) {
   });
 }
 
-async function ensureComposer() {
+export async function composerInstall() {
+  installPhp();
+
   if (!hasPhp()) {
-    console.error(
-      '\n[vercel-install] ERROR: PHP is not available and could not be installed (dnf/apt).\n' +
-        '1) Vercel → Project → Settings → General: remove custom **Build Command** (or set to: npm run vercel-build)\n' +
-        '2) Commit & push latest vercel.json + package.json from this repo.\n' +
-        '3) Or run this Laravel app on **Railway** (same as your DB) with a normal PHP build.\n',
-    );
+    console.error(`
+[vercel-install] PHP not found — dnf/apt could not install it.
+
+FIX (choose one):
+  A) Vercel → Project → Settings → General → Build & Development Settings
+     → Build Command: set to exactly:  npm run build
+     → Turn OFF override if it still shows: curl ... | php ...
+     (Dashboard overrides vercel.json — your logs prove override is ON.)
+
+  B) Deploy this Laravel app on Railway (PHP buildpack) — works with your Railway DB.
+
+`);
     process.exit(127);
   }
 
@@ -87,11 +95,9 @@ async function ensureComposer() {
     }
   }
 
-  execSync(
-    `php ${composerPhar} install --no-dev --optimize-autoloader --no-interaction`,
-    { stdio: 'inherit', cwd: root, env: process.env },
-  );
+  execSync(`php ${composerPhar} install --no-dev --optimize-autoloader --no-interaction`, {
+    stdio: 'inherit',
+    cwd: root,
+    env: process.env,
+  });
 }
-
-installPhp();
-await ensureComposer();
