@@ -2,6 +2,7 @@
  * Installs PHP via OS package manager if needed, then composer install --no-dev.
  */
 import { execSync } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
 import { createWriteStream } from 'node:fs';
 import { chmodSync, existsSync } from 'node:fs';
 import { get } from 'node:https';
@@ -36,8 +37,10 @@ function sh(cmd, quiet = false) {
 function installPhp() {
   if (hasPhp()) return;
 
-  // Distros use different names — avoid php8.3-* (often missing on Amazon Linux 2023).
+  // intl/zip/tokenizer often required by Laravel + Composer scripts (package:discover).
   const attempts = [
+    'dnf install -y php php-cli php-common php-mbstring php-xml php-pdo php-mysqlnd php-intl php-json php-bcmath php-process php-zip php-openssl php-curl',
+    'dnf install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd php-intl php-zip',
     'dnf install -y php php-cli php-common php-mbstring php-xml php-pdo php-mysqlnd',
     'dnf install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
     'dnf install -y php8.3',
@@ -102,9 +105,21 @@ FIX (choose one):
     }
   }
 
+  const buildEnv = {
+    ...process.env,
+    APP_ENV: process.env.APP_ENV ?? 'production',
+    APP_DEBUG: 'false',
+    LOG_CHANNEL: process.env.LOG_CHANNEL ?? 'stderr',
+    APP_KEY:
+      process.env.APP_KEY ??
+      `base64:${randomBytes(32).toString('base64')}`,
+    CI: process.env.CI ?? 'true',
+    COMPOSER_ALLOW_SUPERUSER: '1',
+  };
+
   execSync(`php ${composerPhar} install --no-dev --optimize-autoloader --no-interaction`, {
     stdio: 'inherit',
     cwd: root,
-    env: process.env,
+    env: buildEnv,
   });
 }
