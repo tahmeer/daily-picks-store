@@ -7,6 +7,7 @@
     },
     "scripts": {
         "build": "vite build",
+        "vercel-build": "node scripts/vercel-install.mjs && vite build",
         "dev": "vite"
     },
     "devDependencies": {
