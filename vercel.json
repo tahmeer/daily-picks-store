@@ -2,7 +2,7 @@
     "version": 2,
     "regions": ["bom1"],
     "installCommand": "npm ci",
-    "buildCommand": "bash scripts/vercel-build.sh",
+    "buildCommand": "npm run vercel-build",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.7.4",
