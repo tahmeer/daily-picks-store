@@ -33,7 +33,7 @@
     "scripts": {
         "vercel": [
             "npm ci",
-            "npm run vercel-build"
+            "npm run build"
         ],
         "setup": [
             "composer install",
