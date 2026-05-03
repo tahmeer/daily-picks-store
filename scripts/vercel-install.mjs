@@ -20,9 +20,13 @@ function hasPhp() {
   }
 }
 
-function sh(cmd) {
+function sh(cmd, quiet = false) {
   try {
-    execSync(cmd, { stdio: 'inherit', env: process.env, shell: '/bin/bash' });
+    execSync(cmd, {
+      stdio: quiet ? 'pipe' : 'inherit',
+      env: process.env,
+      shell: '/bin/bash',
+    });
     return true;
   } catch {
     return false;
@@ -32,18 +36,21 @@ function sh(cmd) {
 function installPhp() {
   if (hasPhp()) return;
 
+  // Distros use different names — avoid php8.3-* (often missing on Amazon Linux 2023).
   const attempts = [
-    'dnf install -y php8.3-cli php8.3-mbstring php8.3-xml php8.3-pdo php8.3-mysqlnd',
+    'dnf install -y php php-cli php-common php-mbstring php-xml php-pdo php-mysqlnd',
     'dnf install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
+    'dnf install -y php8.3',
     'microdnf install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
     'yum install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
     'apt-get update -y && apt-get install -y php-cli php-mbstring php-xml php-mysql',
     'apk add --no-cache php83 php83-phar php83-mbstring php83-xml php83-pdo php83-mysqlnd php83-openssl php83-curl',
-    'sudo dnf install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
+    'sudo dnf install -y php php-cli php-mbstring php-xml php-pdo php-mysqlnd',
     'sudo apt-get update -y && sudo apt-get install -y php-cli php-mbstring php-xml php-mysql',
   ];
-  for (const cmd of attempts) {
-    sh(cmd);
+  for (let i = 0; i < attempts.length; i++) {
+    const quiet = i < attempts.length - 1;
+    sh(attempts[i], quiet);
     if (hasPhp()) return;
   }
 }
