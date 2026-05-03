@@ -39,18 +39,18 @@ function installPhp() {
 
   // intl/zip/tokenizer often required by Laravel + Composer scripts (package:discover).
   const attempts = [
+    'dnf install -y php8.3-cli php8.3-mbstring php8.3-xml php8.3-pdo php8.3-mysqlnd php8.3-common php8.3-intl php8.3-zip php8.3-bcmath php8.3-process',
+    'dnf install -y php8.3-cli php8.3-mbstring php8.3-xml php8.3-pdo php8.3-mysqlnd php8.3-common',
+    'dnf install -y php8.3-cli php8.3-mbstring php8.3-xml php8.3-pdo php8.3-mysqlnd',
+    'dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm && dnf module reset php -y && dnf module enable php:remi-8.3 -y && dnf install -y php php-cli php-mbstring php-xml php-pdo php-mysqlnd',
     'dnf install -y php php-cli php-common php-mbstring php-xml php-pdo php-mysqlnd php-intl php-json php-bcmath php-process php-zip php-openssl php-curl',
-    'dnf install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd php-intl php-zip',
-    'dnf install -y php php-cli php-common php-mbstring php-xml php-pdo php-mysqlnd',
     'dnf install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
-    'dnf install -y php8.3',
     'microdnf install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
     'yum install -y php-cli php-mbstring php-xml php-pdo php-mysqlnd',
+    'apt-get update -y && apt-get install -y php8.3-cli php8.3-mbstring php8.3-xml php8.3-mysql',
     'apt-get update -y && apt-get install -y php-cli php-mbstring php-xml php-mysql',
     'apk add --no-cache php83 php83-phar php83-mbstring php83-xml php83-pdo php83-mysqlnd php83-openssl php83-curl',
-    'sudo dnf install -y php php-cli php-mbstring php-xml php-pdo php-mysqlnd',
-    'sudo apt-get update -y && sudo apt-get install -y php-cli php-mbstring php-xml php-mysql',
-  ];
+];
   for (let i = 0; i < attempts.length; i++) {
     const quiet = i < attempts.length - 1;
     sh(attempts[i], quiet);
