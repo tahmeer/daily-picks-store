@@ -26,4 +26,4 @@ Route::get('/sales/{sale}/receipt', [SaleController::class, 'receipt'])->name('s
 
 Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
-Route::get('/api/items/search', [ItemController::class, 'search'])->name('items.search');
+Route::get('/items/search', [ItemController::class, 'search'])->name('items.search');
